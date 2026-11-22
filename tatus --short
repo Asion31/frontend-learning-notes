@@ -1,0 +1,104 @@
+warning: in the working copy of 'stage0-html-css/week0-toolchain/day2-note.md', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/stage0-html-css/week0-toolchain/day2-note.md b/stage0-html-css/week0-toolchain/day2-note.md[m
+[1mindex 9d3e7bd..d066f1e 100644[m
+[1m--- a/stage0-html-css/week0-toolchain/day2-note.md[m
+[1m+++ b/stage0-html-css/week0-toolchain/day2-note.md[m
+[36m@@ -1,26 +1,82 @@[m
+ # stage0-html-css / week0-toolchain / Day2 笔记[m
+ [m
+[31m-> 日期：[m
+[32m+[m[32m> 日期：2026-11-22[m
+ [m
+ ## 今日任务[m
+ [m
+ Git 三区概念：工作区 / 暂存区 / 版本库；init、add、commit、status、log、diff 六个命令跑一遍[m
+ [m
+[31m-## 做了什么[m
+[32m+[m[32m## 一、三区模型（今天最重要的一张图）[m
+ [m
+[31m-- [m
+[32m+[m[32m```[m
+[32m+[m[32m工作区                暂存区（index）           版本库（.git）[m
+[32m+[m[32m你正在编辑的文件夹  →  git add  →  待提交的快照  →  git commit  →  一次历史记录[m
+[32m+[m[32m     ↑                        ↑                          ↑[m
+[32m+[m[32m  git status 看这里      git diff --staged 看这里     git log 看这里[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m三句话记住：[m
+[32m+[m
+[32m+[m[32m1. **工作区**：你在 VSCode 里看到、随手改动的那些文件，真实躺在磁盘上[m
+[32m+[m[32m2. **暂存区**：`git add` 之后文件的"样子"被复制进这里，是**下一次提交的候选名单**[m
+[32m+[m[32m3. **版本库**：`git commit` 才真正生成一条历史记录，`log` 里能看到的才是它[m
+[32m+[m
+[32m+[m[32m关键理解：`git add` 不是"保存"，它只是**告诉 Git 这次提交要包含哪些改动**。所以同一个文件可以 add 完之后继续改，形成"暂存了一个旧版本 + 工作区有个新版本"的状态。[m
+[32m+[m
+[32m+[m[32m## 二、六个命令做了什么[m
+[32m+[m
+[32m+[m[32m| 命令 | 作用 | 我的实际操作 |[m
+[32m+[m[32m|---|---|---|[m
+[32m+[m[32m| `git init` | 在一个文件夹里创建 `.git`，把它变成仓库 | 仓库已初始化（`.git` 目录存在） |[m
+[32m+[m[32m| `git status` | 看三区当前状态 | 每一步都看了一次，符号含义见下 |[m
+[32m+[m[32m| `git add <文件>` | 把工作区改动放进暂存区 | `git add demo.txt` |[m
+[32m+[m[32m| `git commit -m "说明"` | 把暂存区内容固化成一条历史 | Day1 已提交一次 |[m
+[32m+[m[32m| `git log` | 看历史 | `--oneline` / `--stat` / `-p` 三种都试了 |[m
+[32m+[m[32m| `git diff` | 看差异 | 不带参数比「工作区 vs 暂存区」，加 `--staged` 比「暂存区 vs 上次提交」 |[m
+[32m+[m
+[32m+[m[32m### status 的短格式符号（`git status --short`）[m
+[32m+[m
+[32m+[m[32m| 符号 | 含义 |[m
+[32m+[m[32m|---|---|[m
+[32m+[m[32m| `??` | 未跟踪：新文件，Git 还没管它 |[m
+[32m+[m[32m| `A` | 已暂存的新文件（已经 add 过） |[m
+[32m+[m[32m| `M` | 已修改但**未暂存** |[m
+[32m+[m[32m| `AM` | 左侧 A 表示暂存区里有一版，右侧 M 表示工作区又改了新内容 |[m
+[32m+[m[32m| 第一列 | 暂存区状态 |[m
+[32m+[m[32m| 第二列 | 工作区状态 |[m
+[32m+[m
+[32m+[m[32m## 三、实测记录（用 demo.txt 走了一遍）[m
+[32m+[m
+[32m+[m[32m1. 新建文件 → `??`（未跟踪）[m
+[32m+[m[32m2. `git add` → `A`（进了暂存区）[m
+[32m+[m[32m3. `git diff --staged` → 显示整段新增内容（暂存区 vs 上次提交）[m
+[32m+[m[32m4. 此时 `git diff` → **空**，因为工作区和暂存区一样[m
+[32m+[m[32m5. 往文件里再追加一行 → 状态变成 `AM`[m
+[32m+[m[32m6. `git diff` → **只显示刚追加的那一行**，证明它比的是「工作区 vs 暂存区」[m
+[32m+[m[32m7. 再 `git add` → `git diff` 又变空（新改动也进了暂存区）[m
+[32m+[m[32m8. 演示完清理：`git restore --staged demo.txt` 撤出暂存区 → 删除文件 → `git status` 干净[m
+[32m+[m
+[32m+[m[32m## 四、git log 的三种看法[m
+[32m+[m
+[32m+[m[32m```powershell[m
+[32m+[m[32mgit log --oneline        # 一行一条，最常用[m
+[32m+[m[32mgit log --stat           # 附带改了哪些文件、增删多少行[m
+[32m+[m[32mgit log -p               # 连具体改动内容一起看[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m实测输出：Day1 那条提交改了 `README.md` 和 `day1-note.md`，共 39 行新增、10 行删除——`--stat` 一眼就能看出"这次动了什么"。[m
+ [m
+ ## 卡点与解决（STAR 素材）[m
+ [m
+[31m-- **S 情境**：做的什么练习 / 任务[m
+[31m-- **T 目标**：想达成什么[m
+[31m-- **A 做法**：卡在哪、查了什么、怎么解决的[m
+[31m-- **R 结果**：最终效果 / 学到什么[m
+[32m+[m[32m- **S 情境**：演示时把文件 add 进暂存区后，又往里面加了一行，`git status` 显示 `AM`[m
+[32m+[m[32m- **T 目标**：搞清楚"同一个文件为什么能同时出现在暂存区和工作区，且内容不一样"[m
+[32m+[m[32m- **A 做法**：分别跑 `git diff` 和 `git diff --staged` 对比输出——前者只显示新增那一行，后者显示整份文件。由此确认：暂存区存的是 add 那一刻的文件快照，之后在工作区继续改不会自动同步[m
+[32m+[m[32m- **R 结果**：理解了 add 是"挑选要提交的版本"而不是"保存文件"，也明白了要提交最新内容必须再 add 一次[m
+ [m
+ ## 代码位置[m
+ [m
+[31m-- `src/`[m
+[32m+[m[32m- 今日为命令演示，`src\demo.txt` 用完已删除，无留存代码[m
+ [m
+ ## 待补 / 疑问[m
+ [m
+[31m-- [m
+[32m+[m[32m- `git restore --staged` 和 `git restore` 的区别：前者只把文件撤出暂存区（改动还在），后者直接把工作区改动丢掉（不可恢复），后者要慎用[m
+[1mdiff --git a/stage0-html-css/week0-toolchain/src/git-practice.txt b/stage0-html-css/week0-toolchain/src/git-practice.txt[m
+[1mindex e1adf74..9d73e31 100644[m
+[1m--- a/stage0-html-css/week0-toolchain/src/git-practice.txt[m
+[1m+++ b/stage0-html-css/week0-toolchain/src/git-practice.txt[m
+[36m@@ -1 +1,2 @@[m
+ ﻿练习内容[m
+[32m+[m[32m追加一行[m
