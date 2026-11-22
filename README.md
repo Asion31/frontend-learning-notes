@@ -30,6 +30,7 @@ frontend-learning-notes
 │   └─ by-pattern.md         题型索引：题目 / 卡点 / 重刷标记
 ├─ stage0-html-css/
 │   ├─ README.md             阶段说明 + 周次清单
+│   ├─ week0-toolchain/      工具链准备（Git / 命令行 / DevTools）
 │   ├─ week1-html-basic/
 │   │   ├─ README.md         本周打卡清单（带勾选框）
 │   │   ├─ src/              本周练习代码
@@ -61,6 +62,22 @@ frontend-learning-notes
 
 ## 五、当前进度
 
-- [ ] stage0-week1（待开始）
+| 阶段 / 周 | 状态 |
+|---|---|
+| stage0-week0-toolchain | 进行中（Day1） |
+| 其余 32 周 | 未开始 |
 
-完成一周就回来更新这里的进度。
+每周的具体打卡项看该周 `README.md`，完成一天就勾掉一天。
+
+## 六、Git 工作流（本仓库约定）
+
+```powershell
+git status                 # 看有没有改动
+git add -A                 # 存到暂存区
+git commit -m "【frontend/stage0-week0】Day1 命令行与 Git 配置"
+git push                   # 推送到 GitHub
+```
+
+- 一天一次提交，message 带 `【frontend/<阶段>-<周>】`
+- 分支只用一个 `main`，暂时不搞复杂分支策略
+- `node_modules/`、`dist/` 一律不提交（已在 `.gitignore` 里）
