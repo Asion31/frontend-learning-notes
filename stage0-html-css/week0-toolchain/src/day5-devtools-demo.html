@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Day5 DevTools 练习页</title>
+  <style>
+    body {
+      font-family: "微软雅黑", "Microsoft YaHei", sans-serif;
+      padding: 40px 48px;
+      background: #f7f8fa;
+      color: #333;
+      line-height: 1.8;
+    }
+    h1 {
+      color: #2f5597;
+      font-size: 28px;
+      border-left: 6px solid #2f5597;
+      padding-left: 14px;
+    }
+    .tip {
+      color: #888;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 18px;
+      padding: 10px 18px;
+      font-size: 15px;
+      color: #fff;
+      background: #2f5597;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1f3c6d;
+    }
+    #result {
+      margin-top: 18px;
+      padding: 12px 16px;
+      background: #fff;
+      border: 1px solid #e0e4ea;
+      border-radius: 6px;
+      color: #666;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Day5 · DevTools 练习页</h1>
+  <p class="tip">这个页面故意留了 5 处可以观察的东西，分别对应 Elements / Console / Sources / Network / Application 五个面板。</p>
+
+  <button id="btn">点我：写一条本地存储 + 发一个请求</button>
+  <div id="result">还没有点击</div>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const result = document.getElementById('result');
+
+    function log(msg) {
+      console.log('[Day5] ' + msg);
+      result.textContent = msg;
+    }
+
+    btn.addEventListener('click', function () {
+      const count = Number(localStorage.getItem('day5_clicks') || 0) + 1;
+      localStorage.setItem('day5_clicks', count);
+      log('已点击 ' + count + ' 次，localStorage 里 day5_clicks = ' + count);
+
+      fetch('https://api.github.com/repos/Asion31/frontend-learning-notes')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          console.log('[Day5] 请求返回：', data.full_name, 'star 数', data.stargazers_count);
+          log('请求成功：仓库 ' + data.full_name + '，star ' + data.stargazers_count);
+        })
+        .catch(function (e) { console.warn('[Day5] 请求失败', e); });
+    });
+  </script>
+</body>
+</html>
